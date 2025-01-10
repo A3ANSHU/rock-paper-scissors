@@ -39,7 +39,7 @@ This is a classic Rock Paper Scissors game built using HTML, CSS, and JavaScript
 
 
 ## 🌐 **Live Website**
-Visit the game : **[netlify.app](https://netlify.app/)**
+Visit the game : **[iridescent-choux-db1a90.netlify.app](https://iridescent-choux-db1a90.netlify.app/)**
 
 ## Features
 - **Interactive Gameplay**: Players can select Rock, Paper, or Scissors to compete against the computer's random choice.
@@ -69,12 +69,12 @@ Visit the game : **[netlify.app](https://netlify.app/)**
    ```bash
    git clone https://github.com/A3ANSHU/rock-paper-scissors.git
    ```
-2. Open the `game.html` file in any modern web browser.
+2. Open the `index.html` file in any modern web browser.
 
 ## File Structure
 ```
 rock-paper-scissors/
-├── game.html        # Main HTML file with CSS & JavaScript
+├── index.html        # Main HTML file with CSS & JavaScript
 ├── assets/          # Contains images (rock, paper, scissors icons)
 └── README.md        # This file
 ```
