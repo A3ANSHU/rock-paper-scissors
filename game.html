@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    img {
+      user-drag: none; /* Prevents image drag */
+      -webkit-user-drag: none; /* Safari and Chrome support */
+    }
+
+    .main{
+      width: calc(100% - 50px);
+      height: calc(100% - 50px);
+      border: 2.5px solid ;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+    .player {
+      position: absolute;
+      bottom: 0;
+      flex: 1;
+      text-align: center;
+      padding: 20px;
+    }
+    .choices {
+      margin: 20px 0;
+    }
+    .choice {
+      margin: 10px;
+      padding: 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+      border: 2.5px solid black;
+      border-radius: 50%;
+      background-color: #f4f4f9;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0));
+
+    }
+    .choice:hover {
+      transform: scale(1.1);
+    }
+    .vs {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      border: 2.5px solid black;
+      border-radius: 50px;
+      padding: 10px 20px;
+      background-color: #f4f4f9;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+    }
+    .player-name {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .choice img {
+      width: 50px;
+      height: auto;
+
+    }
+    .my-selection img,
+    .computer-selection img{
+        width: 300px;
+        height: auto;
+        filter: drop-shadow(3px 4px 6px rgba(0, 0, 0));
+    }
+    .left{
+        background-color: rgba(0, 0, 0, 0.2);
+        height: 100%;
+        width: 100%;
+        border-right: 1.75px solid;
+        display: flex;
+        /* flex-direction: column; */
+        align-items: center;
+        justify-content: center;
+    }
+    .right{
+        background-color: rgba(0, 0, 0, 0.2);
+        border-left: 1.75px solid;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+    .computer-selection,
+    .my-selection{
+        display: none;
+    }
+
+    .scores {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      border: 2.5px solid black;
+      border-radius: 50px;
+      padding: 10px 20px;
+      background-color: #f4f4f9;
+
+
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .name-you{
+      position: absolute;
+      text-decoration: underline;
+      text-decoration-color: gray;
+      transform: translate(calc(-100% + -20px), 0);
+      left: 0;
+    }
+    .name-comp{
+      position: absolute;
+      right: 0;
+      transform: translate(calc(100% + 20px), 0);
+    }
+
+    .you, .comp {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .settings{
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      /* justify-content: flex-end; */
+      top: 33px;
+      right: 33px;
+    }
+
+    .settings img {
+      width: 20px;
+      margin-bottom: -3px;
+    }
+
+
+  .settings-btn {    
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .settings-menu {
+    display: none;
+    padding: 5px;
+    margin-top: 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    background-color: #f4f4f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0; /* Initial state for animation */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth effect */
+  }
+
+  .settings-menu.open {
+    display: block;
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Slide down */
+  }
+
+  .settings-menu button {
+    display: block;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 2px;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bolder;
+  }
+
+  .settings-menu button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .card {
+      display: none;
+      position: fixed;
+      z-index: 2;
+      height: 100vh;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* display: flex; */
+      align-items: center;
+      justify-content: center;
+    }
+    .card-content{
+      background: #ffffff;
+      width: 300px;
+      padding: 20px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.9);
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card input {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .card input:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .card .save,
+    .card .close{
+      border-radius: 5px;
+      width: fit-content;
+      padding: 6px;
+      background-color: transparent;
+      cursor: pointer;
+      font-weight: bolder;
+    }
+
+    .card .close{
+      border: none;
+    }
+
+    .card .action{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card .save:hover{
+      border-color: #007bff;
+      color: #007bff;
+      outline: none;
+      box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
+    }
+
+    .card .close:hover {
+      color: #007bff;
+    }
+
+
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(200, 200, 200); /* Dark background color */
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 1s ease-out; /* Fade out effect */
+      z-index: 9999; /* Ensures it stays on top */
+  }
+
+  .splash-content h1 {
+    color: black;
+    font-size: 32px;
+    font-weight: 100;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  .splash-screen.fade-out {
+    opacity: 0;
+  }
+
+  @media (max-width: 768px) {
+    .main{
+      flex-direction: column;
+    }
+
+    .left{
+      border: none;
+      border-bottom: 1.75px solid;
+
+    }
+    .right{
+      border: none;
+      border-top: 1.75px solid;
+    }
+
+    .vs {
+      font-size: 18px;
+      padding: 8px 16px;
+    }
+
+    .scores {
+      top: 50%;
+      left: 50px;
+      font-size: 18px;
+      padding: 8px 16px;
+      gap: 20px;
+      flex-direction: column;
+    }
+
+    .name-you{
+      transform: translate(0, 0);
+      left: 5px;
+      top: 50vh;
+    }
+    .name-comp{
+      transform: translate(0, 0);
+      left: 5px;
+      bottom: 50vh;
+    }
+
+    .player {
+      right: 30px;
+      bottom: 30px;
+      padding: 0px;
+    }
+    .choices {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    .choice {
+      margin: 5px;
+      padding: 6px;
+    }
+    .choice img {
+      width: 25px;
+      height: auto;
+    }
+    .my-selection img,
+    .computer-selection img{
+      width: 100px;
+      filter: drop-shadow(1px 1px 3px rgba(0, 0, 0));
+    }
+
+    .splash-content h1 {
+      font-size: 20px;
+      font-weight: 100;
+      letter-spacing: 1px;
+    }
+
+  }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="settings">
+        <button class="settings-btn" onclick="toggleSettings()"><img src="./assets/gear.png" alt=""></button>
+        <div class="settings-menu" id="settingsMenu">
+            <button onclick="resetScores()">Reset Game</button>
+            <button onclick="renamePlayer()">Rename</button>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-content">
+          <div class=""><span id="my-name"></span> <i class="fa-solid fa-right-long"> </i> <span id="changed-name"></span></div>
+          <input type="text" autofocus placeholder="Enter your name" oninput="handleInputChange(event)">
+          <div class="action">
+            <button class="close" onclick="onClickClose()">close</button>
+            <button class="save" onclick="onClickSave()">save</button>
+          </div>
+        </div>
+    </div>
+    <div class="left">
+      <div class="my-selection rock">
+          <img src="./assets/fist.png" alt="Rock">
+      </div>
+      <div class="my-selection paper">
+          <img src="./assets/five.png" alt="Paper">
+      </div>
+      <div class="my-selection scissors">
+          <img src="./assets/two-fingers.png" alt="Scissors">
+      </div>
+      <div class="player" id="player1">
+        <div class="choices">
+          <button class="choice" onclick="playGame('rock')">
+            <img src="./assets/fist.png" alt="Rock">
+          </button>
+          <button class="choice" onclick="playGame('paper')">
+            <img src="./assets/five.png" alt="Paper">
+          </button>
+          <button class="choice" onclick="playGame('scissors')">
+            <img src="./assets/two-fingers.png" alt="Scissors">
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="vs" id="result">Let's GO</div>
+    <div id="splash-screen" class="splash-screen">
+      <div class="splash-content">
+          <h1>rock • paper • scissors</h1>
+      </div>
+    </div>
+    <div class="scores">
+      <div class="name-you"></div>
+      <div class="you" id="scoreboard-you">0</div>:
+      <div class="comp" id="scoreboard-comp"-comp>0</div>
+      <div class="name-comp">COMPUTER</div>
+    </div>
+    <div class="right">
+      <div class="computer-selection rock">
+        <img src="./assets/fist.png" alt="Rock">
+      </div>
+      <div class="computer-selection paper">
+        <img src="./assets/five.png" alt="Paper">
+      </div>
+      <div class="computer-selection scissors">
+        <img src="./assets/two-fingers.png" alt="Scissors">
+      </div>
+    </div>
+  </div>
+    
+    <script>
+      let playerScore = parseInt(localStorage.getItem('playerScore')) || 0;
+      let computerScore = parseInt(localStorage.getItem('computerScore')) || 0;
+  
+      function updateScoreboard() {
+        const you = document.getElementById('scoreboard-you');
+        const comp = document.getElementById('scoreboard-comp');
+        you.textContent = `${playerScore}`;
+        comp.textContent = `${computerScore}`;
+
+      }
+
+      function toggleSettings() {
+        const menu = document.getElementById('settingsMenu');
+        menu.classList.toggle('open'); // Toggle the "open" class for animation
+      }
+      const name = document.getElementById('changed-name');
+
+      function handleInputChange(event) {
+        name.textContent = event.target.value.trim()
+        console.log("Input value changed:", event.target.value);
+      }
+
+      const card = document.querySelector('.card');
+
+      function onClickClose() {
+        card.style.display = 'none';
+      }
+
+      function renamePlayer() {
+        card.style.display = 'flex';
+        toggleSettings()
+      }
+
+      function onClickSave() {
+        localStorage.setItem('name', name.textContent);
+        card.style.display = 'none';
+        location.reload();
+      }
+  
+      function playGame(userChoice) {
+        const choices = ['rock', 'paper', 'scissors'];
+        const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+  
+        let result;
+        let color;
+  
+        const left = document.querySelector('.left');
+        const right = document.querySelector('.right');
+        const computerSelections = document.getElementsByClassName('computer-selection');
+        Array.from(computerSelections).forEach((element) => {
+          element.style.display = 'none';
+        });
+        const selected = document.querySelector(`.computer-selection.${computerChoice}`);
+        if (selected) {
+          selected.style.display = "block";
+        }
+
+
+        const mySelections = document.getElementsByClassName('my-selection');
+        Array.from(mySelections).forEach((element) => {
+          element.style.display = 'none';
+        });
+        const choosen = document.querySelector(`.my-selection.${userChoice}`);
+        if (choosen) {
+            choosen.style.display = "block";
+        }
+  
+        if (userChoice === computerChoice) {
+          result = `It's a tie!`;
+          color = 'orange';
+
+          left.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'
+          right.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'
+
+        } else if (
+          (userChoice === 'rock' && computerChoice === 'scissors') ||
+          (userChoice === 'paper' && computerChoice === 'rock') ||
+          (userChoice === 'scissors' && computerChoice === 'paper')
+        ) {
+          result = `You win!`;
+          color = 'green';
+          left.style.backgroundColor = 'rgb(0, 128, 0, 0.2)'
+          right.style.backgroundColor = 'rgb(255, 0, 0, 0.2)'
+          playerScore++;
+        } else {
+          result = `You lost!`;
+          color = 'red';
+          right.style.backgroundColor = 'rgb(0, 128, 0, 0.2)'
+          left.style.backgroundColor = 'rgb(255, 0, 0, 0.2)'
+          computerScore++;
+        }
+        const display = document.getElementById('result');
+        display.style.backgroundColor = color;
+        display.textContent = result;  
+        localStorage.setItem('playerScore', playerScore);
+        localStorage.setItem('computerScore', computerScore);
+        updateScoreboard();
+      }
+
+
+
+      function resetScores(){
+            localStorage.setItem('playerScore', 0);
+            localStorage.setItem('computerScore', 0);
+            updateScoreboard();
+            toggleSettings();
+            location.reload()
+        }
+      function adjustWidths() {
+        const you = document.getElementById('scoreboard-you');
+        const comp = document.getElementById('scoreboard-comp');
+
+        const youWidth = you.offsetWidth;
+        const compWidth = comp.offsetWidth;
+
+        const maxWidth = Math.max(youWidth, compWidth);
+
+        you.style.width = `${maxWidth}px`;
+        comp.style.width = `${maxWidth}px`;
+    }
+
+    function checkname(){
+      let name = localStorage.getItem('name');
+      if (name){
+        document.querySelector('.name-you').textContent = name;
+        document.getElementById('my-name').textContent = name;
+        console.log('hiii');
+        
+      }else{
+        localStorage.setItem('name', 'unknown');
+        location.reload();
+        console.log('byyy');
+      }
+    }
+
+    window.onload = function () {
+      updateScoreboard();
+      adjustWidths();
+      checkname();
+
+      setTimeout(() => {
+        const splashScreen = document.getElementById('splash-screen');
+        splashScreen.classList.add('fade-out'); 
+
+        setTimeout(() => {
+            splashScreen.style.display = 'none'; 
+        }, 1000); 
+    }, 1500);
+      
+    };
+    window.addEventListener('resize', adjustWidths);
+    </script>
+  </body>
+</html>
